@@ -16,7 +16,8 @@ var rdb = redis.NewClient(&redis.Options{
 
 func main() {
     r := gin.Default()
-    r.LoadHTMLGlob("assests/html/*")
+    r.Static("/assets", "./assets")
+    r.LoadHTMLGlob("assets/html/*")
     r.GET("/", Index)
     r.GET("/u/:linkId", func(c *gin.Context){
         data, err := rdb.Get(ctx, c.Param("linkId")).Bytes()
@@ -63,5 +64,5 @@ func AddUrl(url string) (UploadResponse, error) {
     if err != nil {
         return UploadResponse{}, err
     }
-    return UploadResponse{Id: id, Time: &t, Url: "https://104.243.44.32:8080/u/"+id}, err
+    return UploadResponse{Id: id, Time: &t, Url: "http://104.243.44.32:8080/u/"+id}, err
 }
