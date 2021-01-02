@@ -18,7 +18,7 @@ function req(method, url, data) {
     return new Promise(function (resolve, reject) {
         let xhr = new XMLHttpRequest();
         xhr.open(method, url);
-        http.setRequestHeader('Content-type', 'application/json');
+        xhr.setRequestHeader('Content-type', 'application/json');
         xhr.onload = function () {
             if (this.status >= 200 && this.status < 300) {
                 resolve(xhr.response);

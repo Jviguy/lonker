@@ -66,3 +66,31 @@ func AddUrl(url string) (UploadResponse, error) {
     }
     return UploadResponse{Id: id, Time: &t, Url: "http://104.243.44.32:8080/u/"+id}, err
 }
+
+func GetEndPoint(c *gin.Context) {
+    json := GetRequest{}
+    if err := c.ShouldBindJSON(&json); err != nil {
+        c.JSON(400, gin.H{"error": err.Error()})
+        return
+    }
+    entry, err := GetEntry(json.Id)
+    if err != nil {
+        c.JSON(400, gin.H{"error": err.Error()})
+        return
+    }
+    c.JSON(200, entry)
+}
+
+func GetEntry(id string) (Entry, error) {
+    entry := Entry{}
+    data, err := rdb.Get(ctx, id).Bytes()
+    if err != nil {
+        //return empty entry and the error
+        return entry, err
+    }
+    err = json.Unmarshal(data, &entry)
+    if err != nil {
+        return entry, err
+    }
+    return entry, err
+}
