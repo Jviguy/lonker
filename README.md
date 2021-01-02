@@ -15,7 +15,7 @@ if r.status_code == 200 {
 }
 ```
 Php (yes I did do that)
-```
+```php
 $json = ["url" => "https://youtube.com/"];
 $ch = curl_init("http://104.243.44.32:8080/api/v0/upload");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
