@@ -5,6 +5,7 @@ import (
    "context"
    "github.com/gin-gonic/gin"
    "encoding/json"
+   "time"
 )
 
 var ctx = context.Background()
@@ -15,6 +16,8 @@ var rdb = redis.NewClient(&redis.Options{
 
 func main() {
     r := gin.Default()
+    r.LoadHTMLGlob("assests/html/*")
+    r.GET("/", Index)
     r.GET("/u/:linkId", func(c *gin.Context){
         data, err := rdb.Get(ctx, c.Param("linkId")).Bytes()
         if err != nil {
@@ -25,9 +28,40 @@ func main() {
         json.Unmarshal(data, &entry)
         c.Redirect(301, entry.Url)
     })
-    r.POST("/api/v0/upload", func(c *gin.Context) {
-        c.JSON(200, gin.H{"url": ""})
-        return
-    })
+    r.POST("/api/v0/upload", UploadEnpoint)
     r.Run()
+}
+
+func Index(c *gin.Context) {
+    c.HTML(200, "index.html", gin.H{
+        "title": "Lonker",
+    })
+    return
+}
+
+func UploadEnpoint(c *gin.Context) {
+    json := UploadRequest{}
+    if err := c.ShouldBindJSON(&json); err != nil {
+        c.JSON(400, gin.H{"error": err.Error()})
+        return
+    }
+    entry, err := AddUrl(json.Url)
+    if err != nil {
+        c.JSON(400, gin.H{"error": err.Error()})
+        return
+    }
+    c.JSON(200, entry)
+    return
+}
+
+func AddUrl(url string) (UploadResponse, error) {
+    t := time.Now()
+    id := GenerateLinkId()
+    entry := Entry{Url: url, Added: &t}
+    data, _ := json.Marshal(entry)
+    err := rdb.Set(ctx, id, data, 0).Err()
+    if err != nil {
+        return UploadResponse{}, err
+    }
+    return UploadResponse{Id: id, Time: &t, Url: "https://104.243.44.32:8080/u/"+id}, err
 }
