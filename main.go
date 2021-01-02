@@ -30,6 +30,7 @@ func main() {
         c.Redirect(301, entry.Url)
     })
     r.POST("/api/v0/upload", UploadEnpoint)
+    r.GET("/api/v0/get", GetEndPoint)
     r.Run()
 }
 
