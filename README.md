@@ -25,6 +25,53 @@ $data = curl_exec($ch);
 curl_close($ch);
 echo $data;
 ```
+C#
+```cs
+var url = "http://104.243.44.32:8080/api/v0/upload";
+
+var httpRequest = (HttpWebRequest)WebRequest.Create(url);
+httpRequest.Method = "POST";
+
+httpRequest.ContentType = "application/json";
+
+var data = "{\"url\": \"https://youtube.com/\"}";
+
+using (var streamWriter = new StreamWriter(httpRequest.GetRequestStream()))
+{
+   streamWriter.Write(data);
+}
+
+var httpResponse = (HttpWebResponse)httpRequest.GetResponse();
+using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+{
+   var result = streamReader.ReadToEnd();
+}
+
+Console.WriteLine(httpResponse.StatusCode);
+```
+Java
+```java
+URL url = new URL("http://104.243.44.32:8080/api/v0/upload");
+HttpURLConnection http = (HttpURLConnection)url.openConnection();
+http.setRequestMethod("POST");
+http.setDoOutput(true);
+http.setRequestProperty("Content-Type", "application/json");
+
+String data = "{\"url\": \"https://youtube.com/\"}";
+
+byte[] out = data.getBytes(StandardCharsets.UTF_8);
+
+OutputStream stream = http.getOutputStream();
+stream.write(out);
+
+System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
+http.disconnect();
+```
+Bash
+```bash
+#!/bin/bash
+curl -X POST http://104.243.44.32:8080/api/v0/upload -H "Content-Type: application/json" -d "{\"url\": \"https://youtube.com/\"}"
+```
 ## Contributing
 At the moment I am looking for frontend developers for this project, so any help on the html design end is much much appreciated. <br>
 For inquires contact me on discord Jviguy#2975
