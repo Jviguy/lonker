@@ -15,13 +15,6 @@ type UploadResponse struct {
 }
 
 /*
-Used for the get endpoint returns a Entry
-*/
-type GetRequest struct {
-    Id string `json:"id"`
-}
-
-/*
 Used in storing urls into the database and returned when a valid get endpoint is getted.
 */
 type Entry struct {

@@ -69,12 +69,7 @@ func AddUrl(url string) (UploadResponse, error) {
 }
 
 func GetEndPoint(c *gin.Context) {
-    json := GetRequest{}
-    if err := c.ShouldBindJSON(&json); err != nil {
-        c.JSON(400, gin.H{"error": err.Error()})
-        return
-    }
-    entry, err := GetEntry(json.Id)
+    entry, err := GetEntry(c.Param("id"))
     if err != nil {
         c.JSON(400, gin.H{"error": err.Error()})
         return
