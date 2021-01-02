@@ -3,9 +3,7 @@ package main
 import (
    "github.com/go-redis/redis/v8"
    "context"
-   "log"
    "github.com/gin-gonic/gin"
-   "time"
    "encoding/json"
 )
 
@@ -16,23 +14,20 @@ var rdb = redis.NewClient(&redis.Options{
 })
 
 func main() {
-    time := time.Now()
-    entry := Entry{Url: "https://youtube.com/", Added: &time}
-    data, _ := json.Marshal(entry)
-    err := rdb.Set(ctx, "TEST", data, 0).Err()
-    if err != nil {
-        log.Fatal(err)
-    }
     r := gin.Default()
     r.GET("/u/:linkId", func(c *gin.Context){
         data, err := rdb.Get(ctx, c.Param("linkId")).Bytes()
         if err != nil {
-            c.JSON(400, gin.H{"message": "Unkown Link",})
+            c.JSON(404, gin.H{"message": "Unkown Link",})
             return
         }
         entry := Entry{}
         json.Unmarshal(data, &entry)
-        c.JSON(200, entry)
+        c.Redirect(301, entry.Url)
+    })
+    r.POST("/api/v0/upload", func(c *gin.Context) {
+        c.JSON(200, gin.H{"url": ""})
+        return
     })
     r.Run()
 }
