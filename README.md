@@ -72,6 +72,3 @@ Bash
 #!/bin/bash
 curl -X POST http://104.243.44.32:8080/api/v0/upload -H "Content-Type: application/json" -d "{\"url\": \"https://youtube.com/\"}"
 ```
-## Contributing
-At the moment I am looking for frontend developers for this project, so any help on the html design end is much much appreciated. <br>
-For inquires contact me on discord Jviguy#2975
